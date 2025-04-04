@@ -165,7 +165,7 @@
                 </a>
             </p>
             
-            <div class="card" style="max-width: 1020px;">
+            <!-- <div class="card" style="max-width: 1020px;">
                 <div class="card-block">
                 <h3>How Do LLMs Copy Meaningful Text?</h3>
                 <p>
@@ -179,6 +179,27 @@
                     LLMs often have to do a similar task of copying text that previously occurred in their context windows. We find that 
                     they actually develop two parallel mechanisms that allow them to complete this task, analogous to the two routes a human could take to copy a sequence of words. While previous work discovered <i>induction heads,</i> a mechanism in LLMs that allows them to copy exact tokens (the smallest units of text that an LLM sees), we describe a new type of head that LLMs use to copy word meanings, <i>concept induction heads.</i> We go on to show that concept induction heads are actually quite important for other tasks as well, like translating words between two different languages. 
                 </p>
+                </div>
+            </div> -->
+
+            <div class="card" style="max-width: 1020px;">
+                <div class="card-block">
+                <h3>There are two ways to copy text...</h3>
+                <p>
+                    Imagine you are asked to copy the nonsense text below onto a new piece of paper. You would have to copy bit-by-bit, slowly transferring one character over at a time. <a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">Olsson et al. (2022)</a> previously showed that LLMs do exactly that, by using <i>induction heads</i> to copy text—circuits responsible for copying one token at a time. 
+
+                    <figure class="center_image">
+                        <img src="images/dualroute-web-scramble.png" class="bigfig">
+                    </figure>
+
+                    But now, imagine that the text you are copying is meaningful ("the false azure in the windowpane"). Here, there are two ways of copying: you could transfer every individual letter like before, or you could leverage your familiarity with each word. Since you already know how to write "windowpane," you don't need to individually copy <tt>w</tt>, <tt>i</tt>, <tt>n</tt>, ... <tt>a</tt>, <tt>n</tt>, <tt>e</tt>. You can just write <i>windowpane</i>.
+
+                    <figure class="center_image">
+                        <img src="images/dualroute-web-sensical.png" class="bigfig">
+                    </figure>
+                    
+                    Can LLMs also copy on this semantic level? In this work, we find two types of induction heads: <i>token</i> induction heads, which copy bit-by-bit, and <i>concept</i> induction heads, which copy word meanings instead of individual tokens. Concept induction heads work together with token induction heads to copy meaningful text. We call this synergy the "dual-route model of induction."
+                </p>
                 </div><!--card-block-->
                 </div><!--card-->
 
@@ -186,9 +207,7 @@
 
         <div class="row">
             <div class="col">
-                <h2>The Dual-Route Model of Induction</h2>   
-                <br>
-                <h3>Inspiration: How do Humans Read?</h3>
+                <h2>Inspiration: How do Humans Read?</h2>
                 Psychologists have developed a <i>dual-route model</i> of reading, which describes two ways that humans can read text (see <a href="https://psychologyoflanguage.pressbooks.tru.ca/chapter/reading-models/#chapter-542-section-4">this textbook section</a> and <a href="https://en.wikipedia.org/wiki/Dual-route_hypothesis_to_reading_aloud">Wikipedia</a>). If readers are looking at a word they already know, they can read it via a lexical pathway that processes whole words at a time, as if they are looking up those words in a dictionary. On the other hand, if readers come across a word they do not know, they must use the <i>sub-lexical</i> route, which decodes individual graphemes into phonemes based on the rules of that language. 
 
                 <figure class="center_image">
@@ -200,8 +219,8 @@
                 The existence of a condition called <i>deep dyslexia</i> provides support for this model. After an accident or stroke, people with deep dyslexia can still read and understand word meanings, but often make semantic errors when reading words aloud. For example, someone with deep dyslexia might read the word CANARY as "parrot", or BUCKET as "pail." The first documented case of deep dyslexia came from <a href="literature/marshall_newcombe_1966.pdf">Marshall and Newcombe (1966)</a>, and was later complemented by the discovery of the opposite condition, <i>surface dyslexia,</i> an inability to read without first "sounding out" words (<a href="https://link.springer.com/article/10.1007/BF01067101">Marshall and Newcombe, 1973</a>). 
                 
 
-                <br><br>
-                <h3>Our Work: Dual-Route Induction</h3>
+                <br>
+                <h2>Our Work: Dual-Route Induction</h2>
                 Inspired by this understanding of human reading, we posit a dual-route model of induction. LLMs can either copy text using token-level induction heads  (<a href="https://transformer-circuits.pub/2021/framework/index.html">Elhage et al., 2021</a>; <a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">Olsson et al., 2022</a>), or using concept-level induction heads, which copy meaningful representations of entire words. In this paper, we identify concept induction heads in four open-source models, and show that they handle word meanings, which also makes them useful for tasks like translating a word between two languages. 
 
                 <figure class="center_image">
@@ -215,13 +234,13 @@
 
                 <figure class="center_image">
                     <img src="images/ablations.png" class="bigfig">
-                    <figcaption>Ablating token induction heads destroys performance for surface-level tasks, whereas ablating concept induction heads destroys performance for semantic tasks. </figcaption>
+                    <figcaption>Ablating token induction heads for Llama-2-7b destroys performance for nonsense copying (dark blue), whereas ablating concept induction heads destroys performance for semantic tasks (red). </figcaption>
                 </figure>
 
-                We find that ablating either set of heads has little impact on Llama-2-7b's ability to copy English words, which makes sense: you can copy <tt>hello</tt> -> <tt>hello</tt> whether or not you understand the meaning of that word. This is why we claim that these two heads work in parallel, because either mechanism can be used to do the same task. 
+                You can see the difference between these two sets of heads when you compare the red and dark blue lines. When token induction heads are ablated, we see that performance goes down much faster for "nonsense copying" (<tt>exSh</tt> -> <tt>exSh</tt>) than for other, meaning-based tasks. This is because models can still use concept induction heads for tasks that require copying word meaning. On the other hand, when concept induction heads are ablated, accuracy for translation, synonyms, and antonyms drops off quickly, while token-based tasks remain intact. 
 
                 <br>
-                You can see the difference between these two sets of heads when you look at the other tasks we test on. When token induction heads are ablated, we see that performance goes down much faster for "Nonsense copying" (<tt>exSh</tt> -> <tt>exSh</tt>) than for other, meaning-based tasks. On the other hand, when concept induction heads are ablated, accuracy for translation, synonyms, and antonyms drops off quickly, while token-based tasks remain intact. 
+                We find that ablating either set of heads has little impact on Llama-2-7b's ability to copy English words, which makes sense: as our intro example demonstrates, you can copy <tt>windowpane</tt> -> <tt>windowpane</tt> whether or not you understand the meaning of that word. Because either mechanism can be used to do this task, we think of these two heads as working in parallel. 
 
                 <h2>Ablating Token Induction Heads Causes Paraphrasing</h2>
                 When some token induction heads are ablated, we find that LLMs start to paraphrase where they would have otherwise done exact copying. We can think of this as "giving the model deep dyslexia"—it is still able to understand semantics, but is no longer able to access exact token information. Much of this rephrasing seems to be on a phrase level, although we do see specific words being replaced with synonyms (e.g., <tt>cases</tt> is replaced by <tt>times</tt>). Section 4.2 and Appendix D.4 show examples of this, and you can also download a notebook to generate paraphrases yourself on <a href="https://github.com/sfeucht/dual-route-induction/blob/main/scripts/qualitative.ipynb">GitHub</a>. 
@@ -286,7 +305,7 @@ foo = <span class="bold">[bar[i] for i in range( </span>
                     </div>
 
 
-                <h2>Concept Induction Heads Output Word Representations</h2>
+                <h2>Concept Induction Heads Output Meaning Representations</h2>
                 Our experiments show that concept induction heads are important for translation. Because <a href="https://arxiv.org/abs/2411.08745">Dumas et al. (2025)</a> claim that LLMs represent word meanings separate from language, we replicate their experiment in a more precise way using these newly-found heads. 
 
                 <br><br>
