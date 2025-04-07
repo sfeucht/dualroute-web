@@ -306,7 +306,7 @@ foo = <span class="bold">[bar[i] for i in range( </span>
 
 
                 <h2>Concept Induction Heads Output Meaning Representations</h2>
-                Our experiments show that concept induction heads are important for translation. Because <a href="https://arxiv.org/abs/2411.08745">Dumas et al. (2025)</a> claim that LLMs represent word meanings separate from language, we replicate their experiment in a more precise way using these newly-found heads. 
+                Our experiments show that concept induction heads are important for translation. Building on results from <a href="https://arxiv.org/abs/2411.08745">Dumas et al. (2025)</a> showing that LLMs represent word meanings separate from language, we replicate their experiment in a more surgical way using these newly-found heads. 
 
                 <br><br>
                 <figure class="center_image">
@@ -315,7 +315,7 @@ foo = <span class="bold">[bar[i] for i in range( </span>
                 </figure>
           
                 We use the same prompt setup as Dumas et al. (2025) to show that concept induction heads output representations of word meaning that can be expressed in multiple languages. 
-                For example, if we take the outputs of concept induction heads when an LLM is translating "niño" ("child") from Spanish to Italian and substitute them into a context where the model is translating from Japanese to Chinese, we can get the model to output "child" in Chinese, "孩子". In other words, we have shown that these heads were carrying the <i>meaning</i> of "niño," without any information telling the model to output "niño" in a particular language. This suggests that concept induction heads are important for translation because they specifically copy semantic information. 
+                For example, if we take the outputs of concept induction heads when an LLM is translating "niño" ("child") from Spanish to Italian and substitute them into a context where the model is translating from Japanese to Chinese, we can get the model to output "child" in Chinese, "孩子". This suggests that these heads were carrying the meaning of the word "child," but not in any particular language. In other words, concept induction heads are important for translation because they specifically copy <i>semantic</i> information. 
 
                 <h2 id="related-work">Related Work</h2>
                 
@@ -344,7 +344,7 @@ foo = <span class="bold">[bar[i] for i in range( </span>
                     <h3 class="card-header">bibliography</h3>
                     <div class="card-block"> 
                         <p style="text-indent: -3em; margin-left: 3em;" class="card-text clickselect">
-                            Sheridan Feucht, Eric Todd, Byron Wallace, and David Bau."<i>The Dual-Route Model of Induction.</i>" Preprint, arXiv:2504.03022 (2025).</nobr> 
+                            Sheridan Feucht, Eric Todd, Byron Wallace, and David Bau. "<i>The Dual-Route Model of Induction.</i>" Preprint, arXiv:2504.03022 (2025).</nobr> 
                         </p>
                     </div>
                     <h3 class="card-header">bibtex</h3>
