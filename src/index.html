@@ -318,8 +318,7 @@ foo = <span class="bold">[bar[i] for i in range( </span>
                 For example, if we take the outputs of concept induction heads when an LLM is translating "niño" ("child") from Spanish to Italian and substitute them into a context where the model is translating from Japanese to Chinese, we can get the model to output "child" in Chinese, "孩子". This suggests that these heads were carrying the meaning of the word "child," but not in any particular language. In other words, concept induction heads are important for translation because they specifically copy <i>semantic</i> information. 
 
                 <h2 id="related-work">Related Work</h2>
-                
-                <p>Our work builds upon insights from other papers:</p>
+
 
                 <p class="citation"><a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html"><img src="images/olsson2022.png" alt="Screenshot of Olsson et al. (2022)"> Catherine Olsson, Nelson Elhage, Neel Nanda, Nicholas Joseph, ... Chris Olah. In-Context Learning and Induction Heads. 2022.</a><br>
                     <b>Notes:</b> Based on the initial discovery of induction heads in <a href="https://transformer-circuits.pub/2021/framework/index.html">Elhage et al. (2022)</a>, the authors investigate the connection between in-context learning and induction heads. They find that ICL capabilities are closely related to the development of induction heads. 
@@ -328,6 +327,10 @@ foo = <span class="bold">[bar[i] for i in range( </span>
                 <p class="citation"><a href="https://arxiv.org/abs/2411.08745"><img src="images/dumasetal2025.png" alt="Figure 1 from Dumas et al. (2025)">Cl&#233;ment Dumas, Chris Wendler, Veniamin Veselovsky, Giovanni Monea, Robert West. Separating Tongue from Thought: Activation Patching Reveals Language-Agnostic Concept Representations in Transformers. 2025.</a><br>
                 <b>Notes:</b> We build off the work of Dumas et al. (2025) in the second half of this paper. They show that the average of a representation for the same word in multiple languages (e.g., "buch", "libro", "book") can be patched into a new context and decoded in an entirely different language (e.g. 书). We repeat their experiments, except instead of patching averaged hidden states, we patch the outputs of concept induction heads. We see the same effect, suggesting that these heads are responsible for transporting language-agnostic word representations. 
                 </p>            
+
+                <p class="citation"><a href="https://arxiv.org/abs/2502.14010"><img src="images/yinsteinhardt2025.png" alt="Figure 1 from Dumas et al. (2025)">Kayo Yin, Jacob Steinhardt. Which Attention Heads Matter for In-Context Learning? 2025.</a><br>
+                    <b>Notes:</b> The authors compare token induction heads to function vector heads, finding that FV heads are more important for ICL than token induction heads. Our work sheds light on why this might be: token induction heads, used for verbatim copying, are likely not as useful for ICL tasks as FV and concept induction heads are. 
+                    </p>     
 
                 <p class="citation"><a href="https://footprints.baulab.info"><img src="images/probe-cf.png" alt="Figure from Feucht et al. (2024)">Sheridan Feucht, David Atkinson, Byron Wallace, David Bau. Token Erasure as a Footprint of Implicit Vocabulary Items in LLMs. 2024.</a><br>
                 <b>Notes:</b> Our own prior work showed that the last tokens of multi-token words/entities strangely "erase" or lose previous-token information in early layers. We suspected that this is due to the process of <i>detokenization</i>, or conversion from a model's literal token vocabulary to its implicit internal vocabulary (also described by <a href="https://arxiv.org/abs/2410.05864">Kaplan et al. (2024)</a>). Concept induction heads seem to operate over these same implicit vocabulary units. 
