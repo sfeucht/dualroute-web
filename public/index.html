@@ -232,10 +232,21 @@
                     <figcaption>Our dual-route model of induction. LLMs develop token induction heads, which are used for verbatim copying, and concept induction heads, important for translation and "fuzzy" copying tasks. These two routes work in parallel to copy meaningful text.</figcaption>
                 </figure>
 
+                <h2>How To Find These Heads?</h2>
+                Many words (like "cardinals", shown below) are chopped into nonsensical bits by tokenizers, meaning that models must learn that `card` and `inals` actually map to one specific meaning. This process is known as "detokenization" (<a href="https://transformer-circuits.pub/2022/solu/index.html">Elhage et al., 2022</a>, <a href="https://arxiv.org/abs/2305.01610">Gurnee et al., 2023</a>). But if the model wants to copy the word "cardinals," it has to convert that latent representation back into the tokens `card` and `inals`.
+
+                We hypothesize that if an attention head is copying over the meaning of one of these multi-token words, it should have information about all tokens in that word. That means it should increase the probability of *future* tokens when patched into a new context, not just the next token.
+
+                So, if we patch an attention head into a new sequence and it increases the probability of the next copied token, we know it is doing some type of copying. But it if *also* increases the probability of the token after that, then we hypothesize that it is carrying the entire detokenized word representation.
+
+                <figure class="center_image">
+                    <img src="images/david_figure1.jpg" class="bigfig">
+                    <figcaption>If an attention head promotes future tokens in a multi-token word, we hypothesize that this head carries the entire word representation.</figcaption>
+                </figure>
+
                 <h2>Ablating Concept and Token Heads</h2> 
                 After identifying token and concept induction heads via causal intervention (see Section 2 of our paper), we test these heads on a new in-context task that requires models to copy word meanings. For example, we give an LLM a list of ten words in French (1. neige, 2. pomme, ... 9. froid, 10. mort) and prompt the model to output the translation of the last word in English (... 9. cold, 10. ___). We also set up tasks where the model has to copy exactly from English -> English. 
                 
-
                 <figure class="center_image">
                     <img src="images/ablations.png" class="bigfig">
                     <figcaption>Ablating token induction heads for Llama-2-7b destroys performance for nonsense copying (dark blue), whereas ablating concept induction heads destroys performance for semantic tasks (red). </figcaption>
@@ -307,6 +318,15 @@ foo = <span class="bold">[bar[i] for i in range( </span>
                             </div>
                         </div>
                     </div>
+
+                <h2>Concept Lens: What Are These Heads Looking At?</h2>
+
+                In this paper, we show that concept induction heads carry meaningful word representations. We can use the weights of these attention heads to develop a "concept lens" that reveals the semantics of arbitrary hidden states in a model. By combining the output and value projections of the top-$k$ concept induction heads, we can obtain a single matrix that extracts semantic information from any hidden state in our model. For example, we can see very different semantics encoded in the representation of "cardinals" (sports, Catholicism, or birds) depending on the prompt that the word is found in.
+
+                <figure class="center_image">
+                    <img src="images/concept_lens.png" class="bigfig">
+                    <figcaption>Concept lens outputs for Llama-2-7b. We multiply the hidden state for inals at every layer by our concept lens matrix before projecting to token space. Applying this lens reveals the semantics of the token <tt>inals</tt>, which we can see depends on the context.</figcaption>
+                </figure>
 
 
                 <h2>Concept Induction Heads Output Meaning Representations</h2>
