@@ -214,6 +214,7 @@
                 <h2>Inspiration: How do Humans Read?</h2>
                 Psychologists have developed a <i>dual-route model</i> of reading, which describes two ways that humans can read text (see <a href="https://psychologyoflanguage.pressbooks.tru.ca/chapter/reading-models/#chapter-542-section-4">this textbook section</a> and <a href="https://en.wikipedia.org/wiki/Dual-route_hypothesis_to_reading_aloud">Wikipedia</a>). If readers are looking at a word they already know, they can read it via a lexical pathway that processes whole words at a time, as if they are looking up those words in a dictionary. On the other hand, if readers come across a word they do not know, they must use the <i>sub-lexical</i> route, which decodes individual graphemes into phonemes based on the rules of that language. 
 
+
                 <figure class="center_image">
                     <img src="images/ramoo.png" class="medfig">
                     <figcaption>Image depicting the dual-route model of reading aloud. Given printed text, a reader can convert from graphemes into phonemes to create speech, or they can map printed words to their semantic meanings and retrieve the pronunciations of those word meanings. (Credit: Ramoo, D. (2021). Psychology of Language. United States: BCcampus, BC Open Textbook Project.)</figcaption>
@@ -227,20 +228,23 @@
                 <h2>Our Work: Dual-Route Induction</h2>
                 Inspired by this understanding of human reading, we posit a dual-route model of induction. LLMs can either copy text using token-level induction heads  (<a href="https://transformer-circuits.pub/2021/framework/index.html">Elhage et al., 2021</a>; <a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">Olsson et al., 2022</a>), or using concept-level induction heads, which copy meaningful representations of entire words. In this paper, we identify concept induction heads in four open-source models, and show that they handle word meanings, which also makes them useful for tasks like translating a word between two languages. 
 
+
                 <figure class="center_image">
                     <img src="images/figure1_website.png" class="bigfig">
                     <figcaption>Our dual-route model of induction. LLMs develop token induction heads, which are used for verbatim copying, and concept induction heads, important for translation and "fuzzy" copying tasks. These two routes work in parallel to copy meaningful text.</figcaption>
                 </figure>
 
                 <h2>How To Find These Heads?</h2>
-                Many words (like "cardinals", shown below) are chopped into nonsensical bits by tokenizers, meaning that models must learn that `card` and `inals` actually map to one specific meaning. This process is known as "detokenization" (<a href="https://transformer-circuits.pub/2022/solu/index.html">Elhage et al., 2022</a>, <a href="https://arxiv.org/abs/2305.01610">Gurnee et al., 2023</a>). But if the model wants to copy the word "cardinals," it has to convert that latent representation back into the tokens `card` and `inals`.
+                Many words (like "cardinals", shown below) are chopped into nonsensical bits by tokenizers, meaning that models must learn that <tt>card</tt> and <tt>inals</tt> actually map to one specific meaning. This process is known as "detokenization" (<a href="https://transformer-circuits.pub/2022/solu/index.html">Elhage et al., 2022</a>, <a href="https://arxiv.org/abs/2305.01610">Gurnee et al., 2023</a>). But if the model wants to copy the word "cardinals," it has to convert that latent representation back into the tokens <tt>card</tt> and <tt>inals</tt>.
 
-                We hypothesize that if an attention head is copying over the meaning of one of these multi-token words, it should have information about all tokens in that word. That means it should increase the probability of *future* tokens when patched into a new context, not just the next token.
 
-                So, if we patch an attention head into a new sequence and it increases the probability of the next copied token, we know it is doing some type of copying. But it if *also* increases the probability of the token after that, then we hypothesize that it is carrying the entire detokenized word representation.
+                We hypothesize that if an attention head is copying over the meaning of one of these multi-token words, it should have information about all tokens in that word. That means it should increase the probability of <i>future</i> tokens when patched into a new context, not just the next token.
+
+
+                So, if we patch an attention head into a new sequence and it increases the probability of the next copied token, we know it is doing some type of copying. But it if <i>also</i> increases the probability of the token after that, then we hypothesize that it is carrying the entire detokenized word representation.
 
                 <figure class="center_image">
-                    <img src="images/david_figure1.jpg" class="bigfig">
+                    <img src="images/david_figure1_cropped.jpg" class="bigfig">
                     <figcaption>If an attention head promotes future tokens in a multi-token word, we hypothesize that this head carries the entire word representation.</figcaption>
                 </figure>
 
@@ -321,7 +325,7 @@ foo = <span class="bold">[bar[i] for i in range( </span>
 
                 <h2>Concept Lens: What Are These Heads Looking At?</h2>
 
-                In this paper, we show that concept induction heads carry meaningful word representations. We can use the weights of these attention heads to develop a "concept lens" that reveals the semantics of arbitrary hidden states in a model. By combining the output and value projections of the top-$k$ concept induction heads, we can obtain a single matrix that extracts semantic information from any hidden state in our model. For example, we can see very different semantics encoded in the representation of "cardinals" (sports, Catholicism, or birds) depending on the prompt that the word is found in.
+                In this paper, we show that concept induction heads carry meaningful word representations. That means we can use the weights of these attention heads to develop a "concept lens" that reveals the semantics of arbitrary hidden states in a model. By combining the output and value projections of the top-k concept induction heads, we can obtain a single matrix that extracts semantic information from any hidden state in our model. For example, if we apply this matrix to a hidden state and project it to token space using logit lens (<a href="https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens">nostalgebraist, 2020</a>), we can see very different semantics encoded in the representation of "cardinals" (sports, Catholicism, or birds) depending on the prompt that the word is found in.
 
                 <figure class="center_image">
                     <img src="images/concept_lens.png" class="bigfig">
