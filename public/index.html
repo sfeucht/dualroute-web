@@ -323,7 +323,7 @@ foo = <span class="bold">[bar[i] for i in range( </span>
                         </div>
                     </div>
 
-                <h2>Concept Lens: What Are These Heads Looking At?</h2>
+                <h2 id="lens">Concept Lens: What Are These Heads Looking At?</h2>
 
                 In this paper, we show that concept induction heads carry meaningful word representations. That means we can use the weights of these attention heads to develop a "concept lens" that reveals the semantics of arbitrary hidden states in a model. By combining the output and value projections of the top-k concept induction heads, we can obtain a single matrix that extracts semantic information from any hidden state in our model. For example, if we apply this matrix to a hidden state and project it to token space using logit lens (<a href="https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens">nostalgebraist, 2020</a>), we can see very different semantics encoded in the representation of "cardinals" (sports, Catholicism, or birds) depending on the prompt that the word is found in.
 
